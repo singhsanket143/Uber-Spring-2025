@@ -28,3 +28,6 @@ public class RedisConfig {
         return redisTemplate;
     }
 }
+
+// 1. Save Driver Location in Redis
+// 2. Get Nearby Drivers from Redis
