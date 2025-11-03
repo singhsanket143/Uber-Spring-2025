@@ -49,7 +49,7 @@ public class RedisLocationServiceImpl implements LocationService {
 
         Circle circle = new Circle(new Point(latitude, longitude), circleRadius);
 
-        GeoResults<GeoLocation<String>> results = geoOperations.radius(DRIVER_GEO_OPS_KEY, circle);
+        GeoResults<GeoLocation<String>> results = geoOperations.radius(DRIVER_GEO_OPS_KEY, circle); // query redis
 
         List<DriverLocationDTO> driverLocations = new ArrayList<>();
 
