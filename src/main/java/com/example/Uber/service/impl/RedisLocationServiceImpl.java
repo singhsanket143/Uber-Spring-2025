@@ -69,3 +69,17 @@ public class RedisLocationServiceImpl implements LocationService {
         return driverLocations;
     }
 }
+
+
+/**
+ * - Booking creation flow
+ * 
+ *  1. User requests a booking with their lat and long coordinate
+ *  2. System should create a booking with pending status
+ *  3. System should search for nearby drivers within a radius of X kilometers
+ *  4. Once found we will raise a request to the drivers UI to check if they want to accept the booking
+ *  5. Which ever driver accepts the booking, we will allot that driver to the booking and update the status to confirmed. 
+ * 
+ *  Note: During this process, while the drivers are checking the booking, the user should not be blocked, they will get a response
+ * of booking is pending. 
+ */
