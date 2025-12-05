@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package com.example.ubersocket;
+package com.example.Uber;
 
 
 option java_multiple_files = true;
-option java_package = "com.example.ubersocket";
+option java_package = "com.example.Uber";
 option java_outer_classname = "Ride";
 
 
