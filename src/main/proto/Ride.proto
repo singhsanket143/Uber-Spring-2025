@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.example.ubersocket;
+
+
+option java_multiple_files = true;
+option java_package = "com.example.ubersocket";
+option java_outer_classname = "Ride";
+
+
+message RideAcceptanceRequest {
+    int32 driver_id = 1;
+    int32 booking_id = 2;
+}
+
+message RideAcceptanceResponse {
+    bool success = 1;
+}
+
+service RideService {
+    rpc acceptRide(RideAcceptanceRequest) returns (RideAcceptanceResponse);
+}

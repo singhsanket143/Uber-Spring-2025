@@ -19,7 +19,8 @@ public class BookingResponse {
     private String passengerName;
     private Long driverId;
     private String driverName;
-    private String pickupLocation;
+    private Double pickupLocationLatitude;
+    private Double pickupLocationLongitude;
     private String dropoffLocation;
     private Booking.BookingStatus status;
     private BigDecimal fare;
