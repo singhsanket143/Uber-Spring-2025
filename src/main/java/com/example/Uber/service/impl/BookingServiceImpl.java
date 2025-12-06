@@ -72,69 +72,61 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponse create(BookingRequest request) {
         // Validate and fetch passenger
-        // Passenger passenger = passengerRepository.findById(request.getPassengerId())
-        //         .orElseThrow(() -> new IllegalArgumentException("Passenger not found with id: " + request.getPassengerId()));
+        Passenger passenger = passengerRepository.findById(request.getPassengerId())
+                .orElseThrow(() -> new IllegalArgumentException("Passenger not found with id: " + request.getPassengerId()));
         
-        // // Handle driver assignment if provided
-        // Driver driver = null;
-        // Booking.BookingStatus status = Booking.BookingStatus.PENDING;
+        // Handle driver assignment if provided
+        Driver driver = null;
+        Booking.BookingStatus status = Booking.BookingStatus.PENDING;
         
-        // if (request.getDriverId() != null) {
-        //     driver = driverRepository.findById(request.getDriverId())
-        //             .orElseThrow(() -> new IllegalArgumentException("Driver not found with id: " + request.getDriverId()));
+        if (request.getDriverId() != null) {
+            driver = driverRepository.findById(request.getDriverId())
+                    .orElseThrow(() -> new IllegalArgumentException("Driver not found with id: " + request.getDriverId()));
             
-        //     // Check if driver is available
-        //     if (!driver.getIsAvailable()) {
-        //         throw new IllegalStateException("Driver with id " + request.getDriverId() + " is not available");
-        //     }
+            // Check if driver is available
+            if (!driver.getIsAvailable()) {
+                throw new IllegalStateException("Driver with id " + request.getDriverId() + " is not available");
+            }
             
-        //     // Assign driver and mark as unavailable
-        //     driver.setIsAvailable(false);
-        //     driverRepository.save(driver);
-        //     status = Booking.BookingStatus.CONFIRMED;
-        // }
+            // Assign driver and mark as unavailable
+            driver.setIsAvailable(false);
+            driverRepository.save(driver);
+            status = Booking.BookingStatus.CONFIRMED;
+        }
         
         // // Convert latitude/longitude from Double to String
-        // String pickupLat = request.getPickupLocationLatitude() != null 
-        //         ? request.getPickupLocationLatitude().toString() 
-        //         : null;
-        // String pickupLng = request.getPickupLocationLongitude() != null 
-        //         ? request.getPickupLocationLongitude().toString() 
-        //         : null;
+        String pickupLat = request.getPickupLocationLatitude() != null 
+                ? request.getPickupLocationLatitude().toString() 
+                : null;
+        String pickupLng = request.getPickupLocationLongitude() != null 
+                ? request.getPickupLocationLongitude().toString() 
+                : null;
         
-        // if (pickupLat == null || pickupLng == null) {
-        //     throw new IllegalArgumentException("Pickup location latitude and longitude are required");
-        // }
+        if (pickupLat == null || pickupLng == null) {
+            throw new IllegalArgumentException("Pickup location latitude and longitude are required");
+        }
         
         // // Set default fare if not provided
-        // BigDecimal fare = request.getFare();
-        // if (fare == null) {
-        //     fare = BigDecimal.ZERO; // Default fare, can be calculated later
-        // }
+        BigDecimal fare = request.getFare();
+        if (fare == null) {
+            fare = BigDecimal.ZERO; // Default fare, can be calculated later
+        }
         
         // // Create booking
-        // Booking newBooking = Booking.builder()
-        //         .passenger(passenger)
-        //         .driver(driver)
-        //         .pickupLocationLatitude(pickupLat)
-        //         .pickupLocationLongitude(pickupLng)
-        //         .dropoffLocation(request.getDropoffLocation())
-        //         .status(status)
-        //         .fare(fare)
-        //         .scheduledPickupTime(request.getScheduledPickupTime())
-        //         .build();
+        Booking newBooking = Booking.builder()
+                .passenger(passenger)
+                .driver(driver)
+                .pickupLocationLatitude(pickupLat)
+                .pickupLocationLongitude(pickupLng)
+                .dropoffLocation(request.getDropoffLocation())
+                .status(status)
+                .fare(fare)
+                .scheduledPickupTime(request.getScheduledPickupTime())
+                .build();
         
-        // Booking savedBooking = bookingRepository.save(newBooking);
+        Booking savedBooking = bookingRepository.save(newBooking);
         
-        // // Optionally: Get nearby drivers for notification/matching (if driver not already assigned)
-        // if (driver == null) {
-        //     List<DriverLocationDTO> nearbyDrivers = locationService.getNearbyDrivers(
-        //             request.getPickupLocationLatitude(), 
-        //             request.getPickupLocationLongitude(), 
-        //             10.0
-        //     );
-        //     // Could implement driver matching logic here
-        // }
+        // Find the nearby drivers and then trigger an RPC to UberSocketService to notify them
         
         // return bookingMapper.toResponse(savedBooking);
 
