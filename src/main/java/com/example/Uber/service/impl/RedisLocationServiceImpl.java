@@ -30,12 +30,12 @@ public class RedisLocationServiceImpl implements LocationService {
 
 
     @Override
-    public Boolean saveDriverLocation(String driverId, Double latitude, Double longitude) {
+    public Boolean saveDriverLocation(Integer driverId, Double latitude, Double longitude) {
 
         GeoOperations<String, String> geoOperations = stringRedisTemplate.opsForGeo();
 
         geoOperations.add(DRIVER_GEO_OPS_KEY, 
-            new RedisGeoCommands.GeoLocation<>(driverId, new Point(latitude, longitude))
+            new RedisGeoCommands.GeoLocation<>(driverId.toString(), new Point(latitude, longitude))
         );
         
         return true;
@@ -58,7 +58,7 @@ public class RedisLocationServiceImpl implements LocationService {
             Point point = geoOperations.position(DRIVER_GEO_OPS_KEY, result.getContent().getName()).get(0); // location of individual driver in redis
 
             DriverLocationDTO driverLocation = DriverLocationDTO.builder()
-            .driverId(result.getContent().getName())
+            .driverId(Integer.parseInt(result.getContent().getName()))
             .latitude(point.getY())
             .longitude(point.getX())
             .build();

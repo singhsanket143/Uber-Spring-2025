@@ -1,5 +1,6 @@
 package com.example.Uber.service.impl;
 
+import com.example.Uber.client.GrpcClient;
 import com.example.Uber.dto.BookingRequest;
 import com.example.Uber.dto.BookingResponse;
 import com.example.Uber.dto.DriverLocationDTO;
@@ -33,6 +34,7 @@ public class BookingServiceImpl implements BookingService {
     private final DriverRepository driverRepository;
     private final LocationService locationService;
     private final BookingMapper bookingMapper;
+    private final GrpcClient grpcClient;
     
     @Override
     @Transactional(readOnly = true)
@@ -127,10 +129,11 @@ public class BookingServiceImpl implements BookingService {
         Booking savedBooking = bookingRepository.save(newBooking);
         
         // Find the nearby drivers and then trigger an RPC to UberSocketService to notify them
-        
-        // return bookingMapper.toResponse(savedBooking);
 
-        return null;
+        List<DriverLocationDTO> nearbyDrivers = locationService.getNearbyDrivers(Double.parseDouble(pickupLat), Double.parseDouble(pickupLng), 10.0);
+        
+        grpcClient.notifyDriversForNewRide(pickupLat, pickupLng, Integer.parseInt(savedBooking.getId().toString()), nearbyDrivers.stream().map(DriverLocationDTO::getDriverId).collect(Collectors.toList()));
+        return bookingMapper.toResponse(savedBooking);
     }
     
     @Override
